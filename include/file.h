@@ -12,4 +12,7 @@ int create_db_file(char *filename, int *fd);
    STATUS_ERROR.*/
 int open_db_file(char *filename, int *fd);
 
+int read_employees(int fd, struct dbheader_t *, struct employee_t **employeesOut);
+int output_file(int fd, struct dbheader_t *, struct employee_t *employees);
+
 #endif

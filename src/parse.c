@@ -11,11 +11,6 @@
 #include "parse.h"
 
 
-	
-
-
-/* This should be called something else? Create header?
-   Seems like a lot more than validation is going on here. */
 int validate_db_header(int fd, struct dbheader_t **headerOut) {
 	// validate file descriptor
 	if (fd < 0) {
@@ -37,12 +32,8 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 		return STATUS_ERROR;
 	}
 
-	// The "ntohs" or "Network To Host Short" call is a Linux utility which 
-	// converts data to the proper "endianess" for the system. So we read 
-	// stuff from the header, convert it to the proper format for our system, 
-	// and write it back to memory.
-	//
-	// "ntohl" is doing essentially the same thing, it's just returning a long int
+	/* Adapt values from the database file (which could reside on another system) 
+	   to the format used on this system. */
 	header->version = ntohs(header->version);
 	header->count = ntohs(header->count);
 	header->magic = ntohl(header->magic);
@@ -51,13 +42,13 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 	if (header->magic != HEADER_MAGIC) {
 		printf("Impromper header magic\n");
 		free(header);
-		return -1;
+		return STATUS_ERROR;
 	}
 
 	if (header->version != 1) {
 		printf("Impromper header version\n");
 		free(header);
-		return -1;
+		return STATUS_ERROR;
 	}
 
 	// Is DB the correct size?
@@ -66,10 +57,11 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 	if (header->filesize != dbstat.st_size) {
 		printf("Corrupted database\n");
 		free(header);
-		return -1;
+		return STATUS_ERROR;
 	}
 
 	*headerOut = header;
+	return STATUS_SUCCESS;
 }
 
 
@@ -114,3 +106,16 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *a
 }
 
 
+int change_hours(struct dbheader_t *dbhdr, struct employee_t *employees, char *newHours) {
+	char *name = strtok(newHours, ",");
+	char *hours = strtok(NULL, ",");
+
+	int i = 0;
+	for(; i < dbhdr->count; i++) {
+		if ( strcmp(employees[i].name, name) == 0 ) {
+			employees[i].hours = atoi(hours);
+			return STATUS_SUCCESS;
+		}
+	}
+	return STATUS_ERROR;
+}

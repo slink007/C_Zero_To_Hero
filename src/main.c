@@ -16,23 +16,25 @@ int print_usage(char *argv[]) {
 	printf("Usage: %s -n -f <database file>\n", argv[0]);
 	printf("\t -n - create new database file\n");
 	printf("\t -f - (required) path to database file\n");
+	printf("\t -a <name,address,hours> adds a new employee\n");
+	printf("\t -h <name,hours> changes hours of 'employee' to 'hours'");
 	return 0;
 }
 
 int main(int argc, char *argv[]) { 
 	char *filepath = NULL;
 	char *addstring = NULL;
+	char *newHours = NULL;
 	bool newfile = false;
 	bool list = false;
 	int c = 0;
 	int dbfd = -1;  // database file descriptor
-	// int status = STATUS_ERROR;
 	struct dbheader_t *dbhdr = NULL;
 	struct employee_t *employees = NULL;
 
 	// option "n" is a binary option because it has no modifier
 	// option "f:" is a string due to the colon modifier
-	while ((c = getopt(argc, argv, "nf:a:l")) != -1) {
+	while ((c = getopt(argc, argv, "nf:a:lh:")) != -1) {
 		switch(c) {
 			case 'f':
 				filepath = optarg;
@@ -45,6 +47,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'a':
 				addstring = optarg;
+				break;
+			case 'h':
+				newHours = optarg;
 				break;
 			case '?':
 				printf("Unknown option -%c\n", c);
@@ -96,6 +101,10 @@ int main(int argc, char *argv[]) {
 	
 	if (list) {
 		list_employees(dbhdr, employees);
+	}
+
+	if (newHours) {
+		change_hours(dbhdr, employees, newHours);
 	}
 	
 	output_file(dbfd, dbhdr, employees);

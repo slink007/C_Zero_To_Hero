@@ -12,8 +12,8 @@ struct dbheader_t {
 };
 
 struct employee_t {
-	char name[128];
-	char address[128];
+	char name[64];
+	char address[64];
 	unsigned int hours;
 };
 

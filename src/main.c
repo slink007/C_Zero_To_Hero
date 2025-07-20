@@ -7,10 +7,6 @@
 #include "file.h"
 #include "parse.h"
 
-/* TODO
- * 1.  Add ability to remove an employee (use their name to find them).
- * 2.  Add ability to change an employee's hours (use their name to find them).
- */
 
 int print_usage(char *argv[]) {
 	printf("Usage: %s -n -f <database file>\n", argv[0]);
@@ -25,6 +21,7 @@ int main(int argc, char *argv[]) {
 	char *filepath = NULL;
 	char *addstring = NULL;
 	char *newHours = NULL;
+	char *removeName = NULL;
 	bool newfile = false;
 	bool list = false;
 	int c = 0;
@@ -32,9 +29,9 @@ int main(int argc, char *argv[]) {
 	struct dbheader_t *dbhdr = NULL;
 	struct employee_t *employees = NULL;
 
-	// option "n" is a binary option because it has no modifier
-	// option "f:" is a string due to the colon modifier
-	while ((c = getopt(argc, argv, "nf:a:lh:")) != -1) {
+	// option "n" expects no input because it has no modifier
+	// option "f:" expects input due to the colon modifier
+	while ((c = getopt(argc, argv, "nf:a:lh:r:")) != -1) {
 		switch(c) {
 			case 'f':
 				filepath = optarg;
@@ -51,11 +48,16 @@ int main(int argc, char *argv[]) {
 			case 'h':
 				newHours = optarg;
 				break;
+			case 'r':
+				removeName = optarg;
+				break;
 			case '?':
 				printf("Unknown option -%c\n", c);
+				print_usage(argv);
 				break;
 			default:
 				printf("We shouldn't be here...\n");
+				print_usage(argv);
 				return -1;
 		}
 	}
@@ -93,21 +95,34 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 	
+	// Add an employee
 	if (addstring) {
 		dbhdr->count++;
 		employees = realloc(employees, dbhdr->count*(sizeof(struct employee_t)));
 		add_employee(dbhdr, employees, addstring);
 	}
 	
+	// List out all employees in database
 	if (list) {
 		list_employees(dbhdr, employees);
 	}
 
+	// Alter an employee's hours
 	if (newHours) {
 		change_hours(dbhdr, employees, newHours);
+	}
+
+	// Remove someone from database
+	if (removeName) {
+		if (remove_employee(removeName, dbhdr, &employees) == STATUS_SUCCESS) {
+			printf("Successfully removed %s from the database.  Database now contains %d entries.\n", removeName, dbhdr->count);
+		} else {
+			printf("Unable to remove %s from the database.\n", removeName);
+			exit(1);
+		}
 	}
 	
 	output_file(dbfd, dbhdr, employees);
 	
-	return 0;	
+	return STATUS_SUCCESS;	
 }

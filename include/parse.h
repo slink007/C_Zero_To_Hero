@@ -3,6 +3,8 @@
 
 // "LLAD" for Low Level Academy Database
 #define HEADER_MAGIC 0x4c4c4144
+#define NAME_FOUND 1
+#define NAME_NOT_FOUND 0
 
 
 /* Attempts to create a header for a new database file.  Returns STATUS_SUCCESS if this is
@@ -29,5 +31,10 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *a
 /* Searches database using an employee's name and revises their worked hours. Returns
    STATUS_SUCCESS if the change is made, or STATUS_ERROR if the change is not made. */
 int change_hours(struct dbheader_t *dbhdr, struct employee_t *employees, char *newHours);
+
+/* Searches database using an employee's name.  If a match is made then the employee is
+   removed from the database and STATUS_SUCCESS is returned.  If no match is made then
+   STATUS_ERROR is returned. */
+int remove_employee(char *name, struct dbheader_t *dbhdr, struct employee_t **employees);
 
 #endif

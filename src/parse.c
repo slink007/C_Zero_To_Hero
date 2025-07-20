@@ -55,7 +55,8 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 	struct stat dbstat = {0};
 	fstat(fd, &dbstat);
 	if (header->filesize != dbstat.st_size) {
-		printf("Corrupted database\n");
+		printf("Corrupted database. Header shows %d bytes while fstat indicates %ld bytes.\n", header->filesize, dbstat.st_size);
+		printf("An entry is %ld bytes.\n", sizeof(struct employee_t));
 		free(header);
 		return STATUS_ERROR;
 	}
@@ -77,7 +78,7 @@ int create_db_header(int fd, struct dbheader_t **headerOut) {
 	header->magic = HEADER_MAGIC;
 	header->filesize = sizeof(struct dbheader_t);
 
-	*headerOut = header;    // Assigns allocated memory to the pointer passed into this function.
+	*headerOut = header;  // Assigns allocated memory to the pointer passed into this function.
 
 	return STATUS_SUCCESS;
 }
@@ -118,4 +119,42 @@ int change_hours(struct dbheader_t *dbhdr, struct employee_t *employees, char *n
 		}
 	}
 	return STATUS_ERROR;
+}
+
+
+int remove_employee(char *name, struct dbheader_t *dbhdr, struct employee_t **employees) {
+    int status = NAME_NOT_FOUND;
+    int copy_limit = dbhdr->count - 1;
+	int employees_read = 0;
+
+	struct employee_t *copy_to = NULL;
+	copy_to = *employees;
+	struct employee_t *copy_from = NULL;
+	copy_from = *employees;
+
+	while (employees_read < dbhdr->count) {
+		if (strcmp((*copy_from).name, name) != 0) {  // this is not the person to remove
+			memcpy(copy_to, copy_from, sizeof(struct employee_t));
+			copy_to++;
+		} else {
+			status = NAME_FOUND;
+		}
+		copy_from++;
+		employees_read++;
+	}
+
+	if (status == NAME_FOUND) {
+		struct employee_t *new_employees = (struct employee_t *)realloc(*employees, copy_limit * sizeof(struct employee_t));
+		if (new_employees == NULL) {
+			perror("Realloc failed");
+			free(*employees);
+			return STATUS_ERROR;
+		} 
+		*employees = new_employees;
+		dbhdr->count = copy_limit;
+		return STATUS_SUCCESS;
+	} else {
+		free(*employees);
+		return STATUS_ERROR;
+	}
 }

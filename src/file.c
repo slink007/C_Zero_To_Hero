@@ -49,8 +49,9 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 	dbhdr->count = htons(dbhdr->count);
 	dbhdr->version = htons(dbhdr->version);
 
-	// Ensure that content goes to the very beginning of the file.
-	lseek(fd, 0, SEEK_SET);
+	lseek(fd, 0, SEEK_SET);  // Ensure that content goes to the very beginning of the file.
+	ftruncate(fd, 0);        // Empty out file before writing so that if we remove an
+	                         // employee there isn't leftover data.
 
 	// Write the header
 	write(fd, dbhdr, sizeof(struct dbheader_t));

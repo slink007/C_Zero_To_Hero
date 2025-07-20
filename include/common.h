@@ -8,12 +8,12 @@ struct dbheader_t {
 	unsigned int magic;      // tells the file parser if this is a valid DB file or not
 	unsigned short version;  // shows the version of the DB file
 	unsigned short count;    // number of records in the file
-	unsigned int filesize;   
+	unsigned int filesize;
 };
 
 struct employee_t {
-	char name[64];
-	char address[64];
+	char name[256];
+	char address[256];
 	unsigned int hours;
 };
 

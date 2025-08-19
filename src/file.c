@@ -1,6 +1,8 @@
 #include <stdio.h>
 
+#define _XOPEN_SOURCE 500  // Trying to get compiler to allow ftruncate()
 #include <unistd.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

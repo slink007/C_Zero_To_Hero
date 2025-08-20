@@ -35,7 +35,11 @@ int create_db_file(char *filename, int *fd) {
 */
 
 int create_db_file(char *filename) {
-	int fd = open(filename, O_RDWR | O_CREAT, 0644);
+	if (filename == NULL) {
+		return -1;
+	} else {
+		return open(filename, O_RDWR | O_CREAT, 0644);
+	}
 }
 
 int truncate_db_file(char *filename, int *fd) {

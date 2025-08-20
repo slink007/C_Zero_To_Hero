@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-#define _XOPEN_SOURCE 700  // Trying to get compiler to allow ftruncate()
 #include <unistd.h>
 
 #include <sys/types.h>
@@ -29,6 +28,12 @@ int create_db_file(char *filename, int *fd) {
 }
 
 
+int truncate_db_file(char *filename, int *fd) {
+	*fd = open(filename, O_WRONLY | O_TRUNC, 0644);
+	return test_fd(fd);
+}
+
+
 int open_db_file(char *filename, int *fd) {
 	*fd = open(filename, O_RDWR, 0644);
 	return test_fd(fd);
@@ -52,7 +57,7 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 	dbhdr->version = htons(dbhdr->version);
 
 	lseek(fd, 0, SEEK_SET);  // Ensure that content goes to the very beginning of the file.
-	ftruncate(fd, 0);        // Empty out file before writing so that if we remove an
+	// ftruncate(fd, 0);        // Empty out file before writing so that if we remove an
 	                         // employee there isn't leftover data.
 
 	// Write the header

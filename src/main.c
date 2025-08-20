@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "file.h"
@@ -122,7 +123,18 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
-	output_file(dbfd, dbhdr, employees);
+	/* Need to
+     * 1. close the dbfd file    O_WRONLY | O_TRUNC, 0644
+     * 2. open it in write mode (forces all content to be removed)
+     * 3. remove ftrunctate() from output_file
+     */
+    close(dbfd);
+    if ( truncate_db_file(filepath, &dbfd) == STATUS_ERROR ) {
+		printf("Unable to open database file %s\n", filepath);
+		return STATUS_ERROR;
+	} else {
+        output_file(dbfd, dbhdr, employees);
+    }
 	
 	return STATUS_SUCCESS;	
 }

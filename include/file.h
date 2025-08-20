@@ -3,9 +3,13 @@
 
 /* Attempt to create a new file whose name is stored in 'fileneme'. The file
    descriptor for this file is stored in 'fd'. Returns STATUS_SUCCESS or 
-   STATUS_ERROR.*/
-int create_db_file(char *filename, int *fd);
+   STATUS_ERROR.
+int create_db_file(char *filename, int *fd);*/
 
+/* New version, as imposed by online grader. Attempt to create a new file whose 
+   name is stored in 'fileneme'. Returns file descriptor on success, or else 
+   returns -1 on failure. */
+int create_db_file(char *filename);
 
 /* Attempt to open a file whose name is stored in 'fileneme'. The file
    descriptor for this file is stored in 'fd'. Returns STATUS_SUCCESS or 

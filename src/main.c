@@ -69,7 +69,8 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if (newfile) {
-		if ( create_db_file(filepath, &dbfd) == STATUS_ERROR ) {
+		dbfd = create_db_file(filepath);
+		if ( dbfd == STATUS_ERROR ) {
 			printf("Unable to create database file %s\n", filepath);
 			return STATUS_ERROR;
 		}

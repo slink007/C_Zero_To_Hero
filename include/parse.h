@@ -9,7 +9,7 @@
 
 /* Attempts to create a header for a new database file.  Returns STATUS_SUCCESS if this is
    successful, or STATUS_ERROR if it is not. */
-int create_db_header(int fd, struct dbheader_t **headerOut);
+int create_db_header(struct dbheader_t **headerOut);
 
 
 /* Attempts to read the database header from the file and ensure that it is properly formed.

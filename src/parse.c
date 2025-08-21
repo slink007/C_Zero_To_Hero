@@ -104,6 +104,11 @@ void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
 
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
+	// Handle the case where function is called without employee information being passed in.
+	if ( addstring == NULL ) {
+		return STATUS_ERROR;
+	}
+	
 	char *name = strtok(addstring, ",");
 	char *address = strtok(NULL, ",");
 	char *hours = strtok(NULL, ",");

@@ -115,6 +115,11 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *a
 		return STATUS_ERROR;
 	}
 	
+	// Handle the case where function is called without dbhdr being passed in.
+	if ( dbhdr == NULL ) {
+		return STATUS_ERROR;
+	}
+	
 	char *name = strtok(addstring, ",");
 	char *address = strtok(NULL, ",");
 	char *hours = strtok(NULL, ",");

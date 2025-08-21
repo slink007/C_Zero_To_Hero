@@ -129,6 +129,12 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *a
 		return STATUS_ERROR;
 	}
 	
+	/* Perhaps employees itself is not not NULL, but one of its pieces is NULL... */
+	if ( employees[dbhdr->count-1].name == NULL || employees[dbhdr->count-1].address == NULL || 
+	     employees[dbhdr->count-1].hours == NULL) {
+		return STATUS_ERROR;
+	}
+	
 	strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
 	strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
 	employees[dbhdr->count-1].hours = atoi(hours);

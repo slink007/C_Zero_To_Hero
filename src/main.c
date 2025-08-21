@@ -72,7 +72,8 @@ int main(int argc, char *argv[]) {
 		dbfd = create_db_file(filepath);
 		if ( dbfd == STATUS_ERROR ) {
 			printf("Invalid filepath\n");
-			return STATUS_ERROR;
+			// return STATUS_ERROR;
+			exit(1);
 		}
 		
 		if ( create_db_header(&dbhdr) == STATUS_ERROR ) {

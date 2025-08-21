@@ -71,11 +71,7 @@ int main(int argc, char *argv[]) {
 	if (newfile) {
 		dbfd = create_db_file(filepath);
 		if ( dbfd == STATUS_ERROR ) {
-			if ( filepath == NULL) {
-				printf("Filepath is a required argument.\n");
-			} else {
-				printf("Unable to create database file %s\n", filepath);
-			}
+			printf("Invalid filepath\n");
 			return STATUS_ERROR;
 		}
 		

@@ -109,6 +109,12 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *a
 		return STATUS_ERROR;
 	}
 	
+	/* Handle the case where there was an issue reallocating memory prior to calling the function,
+	   and employees is NULL. */
+	if ( employees == NULL ) {
+		return STATUS_ERROR;
+	}
+	
 	char *name = strtok(addstring, ",");
 	char *address = strtok(NULL, ",");
 	char *hours = strtok(NULL, ",");

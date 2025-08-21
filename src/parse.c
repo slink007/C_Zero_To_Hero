@@ -66,6 +66,16 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 
 
 int create_db_header(struct dbheader_t **headerOut) {
+	/* The idea for this part is that while headerOut is pointing to NULL,
+	   headerOut itself still exists.  At least under normal conditions.
+	   If something goes wrong and NULL is passed in then a segfault 
+	   occurs when attempting to assign this function's allocated memory
+	   to NULL.
+   */
+	if (headerOut == NULL) {
+		return STATUS_ERROR;
+	}
+	
 	struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
 	if (header == NULL) { 
 		printf("Malloc failed to create db header\n");

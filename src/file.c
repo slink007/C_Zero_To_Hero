@@ -22,18 +22,6 @@ int test_fd(int *fd) {
 }
 
 
-/* As best I can tell, based on the grader's feedback, it seems that this function
- * is now expected to take a single input (a character pointer for the filename) and
- * return the file descriptor instead of returning a status.  This is not in keeping
- * with the videos, but I will try it and see if the grader lets the code pass with
- * the change.
- *
-int create_db_file(char *filename, int *fd) {
-	*fd = open(filename, O_RDWR | O_CREAT, 0644);
-	return test_fd(fd);
-}
-*/
-
 int create_db_file(char *filename) {
 	if (filename == NULL) {
 		return -1;
@@ -71,8 +59,6 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 	dbhdr->version = htons(dbhdr->version);
 
 	lseek(fd, 0, SEEK_SET);  // Ensure that content goes to the very beginning of the file.
-	// ftruncate(fd, 0);        // Empty out file before writing so that if we remove an
-	                         // employee there isn't leftover data.
 
 	// Write the header
 	write(fd, dbhdr, sizeof(struct dbheader_t));
@@ -83,11 +69,6 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 	}
 
 	return STATUS_SUCCESS;
-	/* When testing with an entry of "Timmy H.,123 Sheshire Ln.,120" the value is correctly
-	 * added to the db file, but it may not appear so at first. We write raw bytes to the file,
-	 * so when strings are sent they are in ASCII format and look like one expects when the file
-	 * is printed. The number, 120, is stored as 120 or 0x78. This turns out to be ASCII for
-	 * the letter 'x', and that's what you see when examining the file. */
 }
 
 

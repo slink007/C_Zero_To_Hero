@@ -66,12 +66,7 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 
 
 int create_db_header(struct dbheader_t **headerOut) {
-	/* The idea for this part is that while headerOut is pointing to NULL,
-	   headerOut itself still exists.  At least under normal conditions.
-	   If something goes wrong and NULL is passed in then a segfault 
-	   occurs when attempting to assign this function's allocated memory
-	   to NULL.
-   */
+    // Can't execute if headerOut wasn't passed in
 	if (headerOut == NULL) {
 		return STATUS_ERROR;
 	}
@@ -102,44 +97,33 @@ void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
 	}
 }
 
-/* To satisfy the grader, this function needs to be rewritten to use 
- * int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *addstring);
- */
-int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
-	// Handle the case where function is called without employee information being passed in.
-	if ( addstring == NULL ) {
-		return STATUS_ERROR;
-	}
-	
-	/* Handle the case where there was an issue reallocating memory prior to calling the function,
-	   and employees is NULL. */
-	if ( employees == NULL ) {
-		return STATUS_ERROR;
-	}
-	
-	// Handle the case where function is called without dbhdr being passed in.
-	if ( dbhdr == NULL ) {
-		return STATUS_ERROR;
-	}
-	
+
+int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *addstring) {
+    // Can't execute if any of the inputs is NULL
+    if ( dbhdr == NULL || employees == NULL || addstring == NULL ) {
+        return STATUS_ERROR;
+    }
+    
 	char *name = strtok(addstring, ",");
 	char *address = strtok(NULL, ",");
 	char *hours = strtok(NULL, ",");
 	
-	/* The addstring could be malformed, so one or more of the above pointers may be NULL. */
+	// The addstring could be malformed, so one or more of the above pointers may be NULL.
 	if ( name == NULL || address == NULL || hours == NULL ) {
 		return STATUS_ERROR;
 	}
 	
-	/* Perhaps employees itself is not not NULL, but one of its pieces is NULL... */
-	if ( employees[dbhdr->count-1].name == NULL || employees[dbhdr->count-1].address == NULL || 
-	     employees[dbhdr->count-1].hours == NULL) {
-		return STATUS_ERROR;
-	}
-	
-	strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
-	strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
-	employees[dbhdr->count-1].hours = atoi(hours);
+    dbhdr->count++;
+    struct employee_t *temp = realloc(*employees, dbhdr->count*(sizeof(struct employee_t)));  // make room for another employee
+    if ( temp == NULL ) {    // Unable to allocate more space
+    	return STATUS_ERROR;
+    } else {
+        *employees = temp;
+    }
+    
+	strncpy((*employees)[dbhdr->count-1].name, name, sizeof((*employees)[dbhdr->count-1].name));
+	strncpy((*employees)[dbhdr->count-1].address, address, sizeof((*employees)[dbhdr->count-1].address));
+	(*employees)[dbhdr->count-1].hours = atoi(hours);
 	
 	return STATUS_SUCCESS;
 }

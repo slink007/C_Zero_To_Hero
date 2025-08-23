@@ -100,9 +100,7 @@ int main(int argc, char *argv[]) {
 	
 	// Add an employee
 	if (addstring) {
-		dbhdr->count++;
-		employees = realloc(employees, dbhdr->count*(sizeof(struct employee_t)));
-		add_employee(dbhdr, employees, addstring);
+		add_employee(dbhdr, &employees, addstring);
 	}
 	
 	// List out all employees in database
@@ -125,11 +123,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
-	/* Need to
-     * 1. close the dbfd file    O_WRONLY | O_TRUNC, 0644
-     * 2. open it in write mode (forces all content to be removed)
-     * 3. remove ftrunctate() from output_file
-     */
+
     close(dbfd);
     if ( truncate_db_file(filepath, &dbfd) == STATUS_ERROR ) {
 		printf("Unable to open database file %s\n", filepath);

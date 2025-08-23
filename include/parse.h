@@ -25,6 +25,9 @@ void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees);
 /* Add an employee to the database.  Currently returns STATUS_SUCCESS no matter what.
    Needs an update to either return STATUS_ERROR under certain conditions or else just
    make it return void. */
+/* To satisfy the grader, this function needs to be rewritten to use 
+ * int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *addstring);
+ */
 int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring);
 
 

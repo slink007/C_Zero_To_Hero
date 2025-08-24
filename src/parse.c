@@ -89,7 +89,7 @@ int create_db_header(struct dbheader_t **headerOut) {
 
 
 int list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
-    if ( employees == NULL ) {
+    if ( employees == NULL || dbhdr == NULL) {
         return STATUS_ERROR;
     } else {
         for (int i = 0; i < dbhdr->count; i++) {

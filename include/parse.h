@@ -18,8 +18,9 @@ int create_db_header(struct dbheader_t **headerOut);
 int validate_db_header(int fd, struct dbheader_t **headerOut);
 
 
-/* Prints an ID number and all information for each employee in the database. */
-void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees);
+/* Prints an ID number and all information for each employee in the database. Returns 
+ * STATUS_SUCCESS if this is successful, otherwise returns STATUS_ERROR. */
+int list_employees(struct dbheader_t *dbhdr, struct employee_t *employees);
 
 
 /* New version, imposed by online grader.  Add an employee to the database.  Returns 

@@ -105,7 +105,10 @@ int main(int argc, char *argv[]) {
 	
 	// List out all employees in database
 	if (list) {
-		list_employees(dbhdr, employees);
+		if ( list_employees(dbhdr, employees) == STATUS_ERROR ) {
+            printf("Error reading database\n");
+            return STATUS_ERROR;
+        }
 	}
 
 	// Alter an employee's hours
